@@ -5,7 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker-iuda')
         IMAGE_NAME = "iuda194/sicst_back:prod"
     }
-
+    stages {
         stage('Build Docker Image') {
             steps {
                 script {
