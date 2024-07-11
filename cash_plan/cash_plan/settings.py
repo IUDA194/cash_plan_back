@@ -180,6 +180,12 @@ CORS_ALLOW_HEADERS = (
     "x-requested-with",
 )
 
-CORS_ALLOWED_ORIGINS = ['*']
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://back-cash-planner.sitera.tech/",
+    "https://127.0.0.1:8000"
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
