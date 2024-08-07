@@ -6,7 +6,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 
-from users.models import User, Currency
+from users.models import User
+from currency.serializers import CurrencySerializer
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -73,14 +74,19 @@ class UserLoginSerializer(serializers.Serializer):
         else:
             raise AuthenticationFailed('Invalid credentials.')
 
-class CurrencySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Currency
-        fields = ['name', 'full_name']
-
 class UserSerializer(serializers.ModelSerializer):
     currency = CurrencySerializer()
 
     class Meta:
         model = User
         fields = ['currency', 'balance', 'daily_amount']
+
+class UserUpdateCurrencySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['currency']
+
+class UserUpdateDailyAmountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['daily_amount']

@@ -12,8 +12,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.models import User, Currency
-from users.serializers import UserRegistrationSerializer, UserLoginSerializer, UserSerializer
+from users.models import User
+from users.serializers import (
+    UserRegistrationSerializer, UserLoginSerializer, UserSerializer,
+    UserUpdateCurrencySerializer, UserUpdateDailyAmountSerializer
+)
 
 class UserRegisterView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
@@ -29,7 +32,6 @@ class UserRegisterView(generics.CreateAPIView):
 class UserLoginView(generics.GenericAPIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = UserLoginSerializer
-
     
     @method_decorator(ratelimit(key='ip', rate='5/m', block=True))
     def post(self, request, *args, **kwargs):
@@ -55,3 +57,19 @@ class UserDetailView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+class UpdateUserCurrencyView(generics.UpdateAPIView):
+    serializer_class = UserUpdateCurrencySerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self):
+        user = self.request.user
+        return user
+
+class UpdateUserDailyAmountView(generics.UpdateAPIView):
+    serializer_class = UserUpdateDailyAmountSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self):
+        user = self.request.user
+        return user

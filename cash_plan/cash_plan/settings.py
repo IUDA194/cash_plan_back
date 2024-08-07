@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-k4vhb!y0x8m!ad(07uyc4@od4!zk95+=6874%9qteyn+76m7hs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['116.202.221.105', 'back-cash-planner.sitera.tech']
+ALLOWED_HOSTS = ['116.202.221.105', 'back-cash-planner.sitera.tech', '127.0.0.1']
 
 
 # Application definition
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
     'users',
     'plans',
+    'currency',
 ]
 
 SIMPLE_JWT = {

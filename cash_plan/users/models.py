@@ -3,12 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.utils.translation import gettext_lazy as _
-from django.db.models.signals import post_migrate
-from django.dispatch import receiver
 
-class Currency(models.Model):
-    name = models.CharField(max_length=228)
-    full_name = models.CharField(max_length=456)
+from currency.models import Currency
 
 class User(AbstractUser):
     email = models.EmailField(verbose_name='email address', unique=True, null=True, blank=True)
@@ -49,11 +45,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.email}"
-
-@receiver(post_migrate)
-def create_default_currency(sender, **kwargs):
-    if sender.name == 'users':  # Замените 'your_app_name' на имя вашего приложения
-        Currency = sender.get_model('Currency')
-        if not Currency.objects.filter(name='USD').exists():
-            Currency.objects.create(name='USD', full_name='United States Dollar')
-
