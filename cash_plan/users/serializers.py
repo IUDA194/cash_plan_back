@@ -90,3 +90,24 @@ class UserUpdateDailyAmountSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['daily_amount']
+
+    def validate_daily_amount(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Daily amount must be a positive number.")
+
+        return value
+
+    def update(self, instance, validated_data):
+        old_daily_amount = instance.daily_amount or 0
+
+        new_daily_amount = validated_data.get('daily_amount', old_daily_amount)
+
+        difference = new_daily_amount - old_daily_amount
+
+        instance.balance += difference
+
+        instance.daily_amount = new_daily_amount
+
+        instance.save()
+
+        return instance

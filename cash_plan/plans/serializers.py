@@ -17,12 +17,6 @@ class OperationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Amount must be greater than 0.")
         return value
 
-    def validate(self, data):
-        user = self.context['request'].user
-        if user.balance < data['amount']:
-            raise serializers.ValidationError("Insufficient balance to complete this operation.")
-        return data
-
     def create(self, validated_data):
         user = self.context['request'].user
         amount = validated_data['amount']
