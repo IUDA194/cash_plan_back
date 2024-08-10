@@ -25,12 +25,12 @@ from cash_plan.settings import APPLICATION_VERSION
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Snippets API",
+      title="HMICST Api",
       default_version='v1',
-      description="Test description",
+      description="Swagger — это набор инструментов для проектирования, построения и документирования RESTful API. Он позволяет разработчикам легко создавать спецификации API, которые можно использовать для автоматической генерации документации, тестирования и даже создания клиентского кода. Swagger предоставляет визуальный интерфейс, где можно увидеть все доступные эндпоинты API, их параметры, типы данных и возможные ответы, что делает взаимодействие с API простым и понятным как для разработчиков, так и для пользователей.",
       terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="contact@snippets.local"),
-      license=openapi.License(name="BSD License"),
+      contact=openapi.Contact(email="popmsee@gmail.com"),
+      license=openapi.License(name="BIMBam License"),
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),
