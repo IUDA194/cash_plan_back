@@ -38,7 +38,6 @@ ALLOWED_HOSTS = ['116.202.221.105', 'back-cash-planner.sitera.tech', '127.0.0.1'
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

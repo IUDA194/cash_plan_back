@@ -1,11 +1,16 @@
 from rest_framework import serializers
-from .models import Operation
+
+from plans.models import Operation
+
 from users.models import User
+from users.serializers import UserSerializer
 
 class OperationSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    
     class Meta:
         model = Operation
-        fields = ['id', 'amount', 'currency', 'name', 'owner', 'description']
+        fields = ['id', 'amount', 'currency', 'owner', 'description']
     
     def validate_amount(self, value):
         if value <= 0:
@@ -14,8 +19,6 @@ class OperationSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         user = self.context['request'].user
-        if data['owner'] != user:
-            raise serializers.ValidationError("Owner must be the same as the authenticated user.")
         if user.balance < data['amount']:
             raise serializers.ValidationError("Insufficient balance to complete this operation.")
         return data
@@ -26,4 +29,3 @@ class OperationSerializer(serializers.ModelSerializer):
         user.balance -= amount
         user.save()
         return super().create(validated_data)
-
