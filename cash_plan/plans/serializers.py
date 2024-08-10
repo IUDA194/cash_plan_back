@@ -10,7 +10,7 @@ class OperationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Operation
-        fields = ['id', 'amount', 'currency', 'owner', 'description']
+        fields = ['id', 'amount', 'currency', 'owner', 'description', 'created_at']
     
     def validate_amount(self, value):
         if value <= 0:
