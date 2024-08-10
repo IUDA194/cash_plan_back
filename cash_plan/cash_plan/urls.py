@@ -16,12 +16,39 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from rest_framework import permissions
+
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
 from cash_plan.settings import APPLICATION_VERSION
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Snippets API",
+      default_version='v1',
+      description="Test description",
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="contact@snippets.local"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
+
 
 base_url = f'api/v{APPLICATION_VERSION}/'
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #Swagger
+    path(f'{base_url}swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path(f'{base_url}swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path(f'{base_url}redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    
+    #Admin
+    path(f'{base_url}admin/', admin.site.urls),
+    
+    #Apps
     path(f'{base_url}users/', include('users.urls')),
     path(f'{base_url}plans/', include('plans.urls')),
     path(f'{base_url}currency/', include('currency.urls')),
