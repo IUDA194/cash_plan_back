@@ -6,6 +6,9 @@ from django.dispatch import receiver
 class Currency(models.Model):
     name = models.CharField(max_length=228)
     full_name = models.CharField(max_length=456)
+    
+    def __str__(self) -> str:
+        return f"{self.full_name}"
 
 @receiver(post_migrate)
 def create_default_currency(sender, **kwargs):

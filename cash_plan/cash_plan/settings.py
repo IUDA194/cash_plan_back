@@ -17,6 +17,9 @@ from dotenv import load_dotenv, find_dotenv
 from datetime import timedelta
 import os
 
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+
 load_dotenv(find_dotenv())
 
 APPLICATION_VERSION = "1"
@@ -39,6 +42,14 @@ ALLOWED_HOSTS = ['116.202.221.105', 'back-cash-planner.sitera.tech', '127.0.0.1'
 
 # Application definition
 INSTALLED_APPS = [
+    "unfold",  # before django.contrib.admin
+    "unfold.contrib.filters",  # optional, if special filters are needed
+    "unfold.contrib.forms",  # optional, if special form elements are needed
+    "unfold.contrib.inlines",  # optional, if special inlines are needed
+    "unfold.contrib.import_export",  # optional, if django-import-export package is used
+    "unfold.contrib.guardian",  # optional, if django-guardian package is used
+    "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,6 +65,78 @@ INSTALLED_APPS = [
     'plans',
     'currency',
 ]
+
+UNFOLD = {
+    "SITE_HEADER" : "How Mach I Can Spend Today",
+    "SITE_ICON" : "https://img.freepik.com/free-vector/pink-neon-glow-dollar-sign-vector-font-typography_53876-161543.jpg?t=st=1723576369~exp=1723579969~hmac=640411a2108f583e9e0812092e1e0d2a7afeded2a4023a86baf611acba68ec25&w=826",
+    #"SITE_LOGO" : "https://www.reshot.com/preview-assets/icons/R7ULS2C9V5/holding-money-R7ULS2C9V5.svg"
+    "EXTENSIONS": {
+        "modeltranslation": {
+            "flags": {
+                "en": "🇬🇧",
+                "fr": "🇫🇷",
+                "nl": "🇧🇪",
+            },
+        },
+    },
+    "DASHBOARD_CALLBACK": "cash_plan.settings.dashboard_callback",
+    "SIDEBAR": {
+        "show_search": False,  # Search in applications and models names
+        "show_all_applications": False,  # Dropdown with all applications and models
+        "navigation": [
+            {
+                "title": _("Navigation"),
+                "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Dashboard"),
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Users"),
+                        "icon": "people",
+                        "link": reverse_lazy("admin:users_user_changelist"),
+                    },
+                    {
+                        "title": _("Operations"),
+                        "icon": "money",
+                        "link": reverse_lazy("admin:plans_operation_changelist"),
+                    },
+                ],
+            },
+        ],
+    },
+}
+
+def dashboard_callback(request, context):
+    """
+    Callback to prepare custom variables for the index template which is used as the dashboard
+    template. This function adds extra context variables that can be used in the dashboard template.
+    """
+    from users.models import User
+    from plans.models import Operation
+
+    # Example data that could be injected into the dashboard context
+    total_operations = Operation.objects.count()
+    total_users = User.objects.count()
+    recent_operations = Operation.objects.order_by('-created_at')[:5]  # Last 5 operations
+    new_users_last_week = User.users_last_week()
+    last_week_operations = Operation.operations_last_week()# Прирост пользователей за последнюю неделю
+
+    context.update(
+        {
+            "total_operations": total_operations,
+            "total_users": total_users,
+            "recent_operations": recent_operations,
+            "new_users_last_week": f"+{new_users_last_week} - for last week",
+            "new_operations_last_week": f"+{last_week_operations} - for last week",
+            "dashboard_title": _("Welcome to the Admin Dashboard"),
+        }
+    )
+    return context
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=5),
@@ -102,7 +185,7 @@ ROOT_URLCONF = 'cash_plan.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'cash_plan/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

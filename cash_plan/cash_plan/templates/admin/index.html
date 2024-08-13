@@ -1,0 +1,72 @@
+{% extends 'unfold/layouts/base_simple.html' %}
+
+{% load i18n unfold %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block title %}
+    {% trans 'Dashboard' %} | {{ site_title|default:_('Django site admin') }}
+{% endblock %}
+
+{% block content_before %}
+    {% include "unfold/helpers/header.html" %}
+
+{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">
+            {{ site_header }}
+        </a>
+    </h1>
+{% endblock %}
+
+
+{% block content %}
+    {% component "unfold/components/title.html" with class="lg:w-1/3" %}
+        Metrics
+    {% endcomponent %}
+    {% component "unfold/components/separator.html" %}
+    {% endcomponent %}
+    {% component "unfold/components/flex.html" with class="gap-8" %}
+        {% trans "Relevant" as label %}
+        {% with new_users_last_week as footer %}
+            {% component "unfold/components/card.html" with class="lg:w-1/3" label=label footer=footer %}
+                {% component "unfold/components/text.html"  %}
+                Total Users
+                {% endcomponent %}    
+                {% component "unfold/components/title.html" %}
+                    {{ total_users }}
+                {% endcomponent %}
+            {% endcomponent %}
+        {% endwith %}
+        {% trans "Relevant" as label %}
+        {% with new_operations_last_week as footer %}
+            {% component "unfold/components/card.html" with class="lg:w-1/3" label=label footer=footer %}
+                {% component "unfold/components/text.html"  %}
+                Total Operations
+                {% endcomponent %}    
+                {% component "unfold/components/title.html" %}
+                    {{ total_operations }}
+                {% endcomponent %}
+            {% endcomponent %}
+        {% endwith %}
+    {% endcomponent %}
+
+    {% component "unfold/components/separator.html" %}
+    {% endcomponent %}
+    
+    {% component "unfold/components/flex.html" with class="gap-8" %}
+        {% component "unfold/components/card.html" with class="lg:w-1/3" %}
+            {% component "unfold/components/title.html" with class="lg:w-1/3" %}
+                Transaction
+            {% endcomponent %}
+            {% component "unfold/components/navigation.html" with class="lg:w-1/3" %}
+                - Total Users: {{ total_users }} </br>
+                - Total Operations: {{ total_operations }}
+            {% endcomponent %}
+            {% component "unfold/components/progress.html" with class="lg:w-1/3" value=100 %}
+            {% endcomponent %}
+        {% endcomponent %}
+    {% endcomponent %}
+{% endblock %}
