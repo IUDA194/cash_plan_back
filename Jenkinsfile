@@ -2,26 +2,29 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('docker-iuda')
+        REGISTRY = "quay.io" // CRI-O по умолчанию работает с Quay.io, замените на ваш регистратор
         IMAGE_NAME = "iuda194/sicst_back:prod"
+        REGISTRY_CREDENTIALS = credentials('iuda-quay') // Обновите с вашими учетными данными для Quay.io
     }
     stages {
-        stage('Build Docker Image') {
+        stage('Build Container Image') {
             steps {
                 script {
-                    // Выполнение команды docker build . в корне проекта
-                    sh 'docker build -t ${IMAGE_NAME} .'
+                    // Создание образа с помощью buildah
+                    sh '''
+                    buildah bud -t ${REGISTRY}/${IMAGE_NAME} .
+                    '''
                 }
             }
         }
         
-        stage('Push Docker Image') {
+        stage('Push Container Image') {
             steps {
                 script {
-                    // Логин в Docker Hub и пуш образа
+                    // Логин в Quay.io и пуш образа
                     sh '''
-                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                    docker push ${IMAGE_NAME}
+                    buildah login -u $REGISTRY_CREDENTIALS_USR -p $REGISTRY_CREDENTIALS_PSW ${REGISTRY}
+                    buildah push ${REGISTRY}/${IMAGE_NAME}
                     '''
                 }
             }
