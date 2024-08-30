@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'cri-o' } // Укажите метку 'cri-o'
 
     environment {
         REGISTRY = "quay.io" // CRI-O по умолчанию работает с Quay.io, замените на ваш регистратор
