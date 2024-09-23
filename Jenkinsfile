@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY = "quay.io" // CRI-O по умолчанию работает с Quay.io, замените на ваш регистратор
         IMAGE_NAME = "iuda194/sicst_back:prod"
-        REGISTRY_CREDENTIALS = credentials('iuda-quay') // Обновите с вашими учетными данными для Quay.io
+        REGISTRY_CREDENTIALS = credentials('docker-iuda')
     }
     stages {
         stage('Build Container Image') {
@@ -12,7 +11,7 @@ pipeline {
                 script {
                     // Создание образа с помощью buildah
                     sh '''
-                    buildah bud -t ${REGISTRY}/${IMAGE_NAME} .
+                    buildah bud -t ${IMAGE_NAME} .
                     '''
                 }
             }
