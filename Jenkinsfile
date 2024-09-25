@@ -2,28 +2,26 @@ pipeline {
     agent any
 
     environment {
+        DOCKERHUB_CREDENTIALS = credentials('docker-iuda')
         IMAGE_NAME = "iuda194/sicst_back:prod"
-        REGISTRY_CREDENTIALS = credentials('docker-iuda')
     }
     stages {
-        stage('Build Container Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Создание образа с помощью buildah
-                    sh '''
-                    buildah bud -t ${IMAGE_NAME} .
-                    '''
+                    // Выполнение команды docker build . в корне проекта
+                    sh 'docker build -t ${IMAGE_NAME} .'
                 }
             }
         }
         
-        stage('Push Container Image') {
+        stage('Push Docker Image') {
             steps {
                 script {
-                    // Логин в Quay.io и пуш образа
+                    // Логин в Docker Hub и пуш образа
                     sh '''
-                    buildah login -u $REGISTRY_CREDENTIALS_USR -p $REGISTRY_CREDENTIALS_PSW ${REGISTRY}
-                    buildah push ${REGISTRY}/${IMAGE_NAME}
+                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                    docker push ${IMAGE_NAME}
                     '''
                 }
             }
