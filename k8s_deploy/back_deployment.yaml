@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sicst-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sicst-back
+  template:
+    metadata:
+      labels:
+        app: sicst-back
+    spec:
+      containers:
+      - name: sicst-back
+        image: iuda194/sicst_back:prod # укажите нужный тег
+        imagePullPolicy: Always # всегда загружать новый образ
+        ports:
+        - containerPort: 80 # укажите порт, который слушает ваше приложение
+        env:
+        - name: SQL_HOST
+          value: "postgres-svc" # адрес сервиса PostgreSQL
+        - name: SQL_NAME
+          value: "cash_planner"
+        - name: SQL_USER
+          value: "cash"
+        - name: SQL_PORT
+          value: "5432"
+        - name: SQL_PASSWORD
+          value: "1213"
+        - name: REDIS_HOST
+          value: "redis-svc" # адрес сервиса Redis
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_DB
+          value: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sicst-back-svc
+spec:
+  type: NodePort
+  selector:
+    app: sicst-back
+  ports:
+  - port: 8000
+    targetPort: 8000
+    nodePort: 30001
