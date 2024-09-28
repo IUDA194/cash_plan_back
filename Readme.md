@@ -28,3 +28,5 @@ A separate microservice is used for daily balance deposits:
 - Project initialization
 
 ## TODO
+- [ ] Translations to multiple languages
+- [ ] Receipt scanning for adding transactions
