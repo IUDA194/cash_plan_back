@@ -20,6 +20,7 @@ A separate microservice is used for daily balance deposits:
 
 ## Project Links
 - Main Project: [Money Manager](https://cash-planner.sitera.tech)
+
 - Backend: [Money Manager Backend](https://back-cash-planner.sitera.tech)
 - Frontend Repo: [Money Manager Frontend Repo](https://github.com/Valik05/money_manager)
 
